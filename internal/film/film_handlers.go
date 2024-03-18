@@ -68,7 +68,8 @@ func (h *FilmHandler) AddFilm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte("film added"))
+	log.Println("film added:", film)
+	w.Write([]byte(fmt.Sprintf("film added: %v", film)))
 	w.WriteHeader(http.StatusCreated)
 }
 

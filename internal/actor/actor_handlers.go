@@ -19,6 +19,10 @@ type ActorHandler struct {
 	ActorRepo Storage
 }
 
+func NewActorHandler(actorRepo Storage) *ActorHandler {
+	return &ActorHandler{ActorRepo: actorRepo}
+}
+
 // @Summary Добавляет актера
 // @Description Добавляет нового актера в базу данных на основе переданных данных.
 // @Accept json
@@ -44,7 +48,7 @@ func (h *ActorHandler) AddActor(w http.ResponseWriter, r *http.Request) {
 
 	err = pkg.DateValidation(actor.BirthDate)
 	if err != nil {
-		log.Println("wrong actor birth date format: ", err)
+		log.Println("wrong actor birth date format:", err)
 		http.Error(w, fmt.Sprintf("wrong actor birth date format"), http.StatusBadRequest)
 		return
 	}

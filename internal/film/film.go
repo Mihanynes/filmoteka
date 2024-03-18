@@ -10,7 +10,7 @@ import (
 
 type Film struct {
 	Title       string        `json:"title" notempty:"true"`
-	Description string        `json:"description" notempty:"true"`
+	Description string        `json:"description,omitempty" notempty:"true"`
 	ReleaseDate string        `json:"release_date" notempty:"true" validate:"date"`
 	Rating      int           `json:"rating" notempty:"true" validate:"min=1,max=10"`
 	Actors      []actor.Actor `json:"actors,omitempty"`

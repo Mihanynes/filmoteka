@@ -140,11 +140,11 @@ func (repo *FilmRepository) FindFilms(toFind string) ([]Film, error) {
 
 	var films []Film
 	var err error
-	if films, err = repo.findFilmsByTitle(toFind); err != nil {
+	if films, err = repo.FindFilmsByTitle(toFind); err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	if len(films) == 0 {
-		if films, err = repo.findFilmsByActor(toFind); err != nil {
+		if films, err = repo.FindFilmsByActor(toFind); err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
 	}
@@ -173,7 +173,7 @@ func (repo FilmRepository) ActorsListWithFilms() (map[actor.Actor][]Film, error)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
-		actorFilms, err := repo.findFilmsByActor(actor.Name)
+		actorFilms, err := repo.FindFilmsByActor(actor.Name)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		}
@@ -182,7 +182,7 @@ func (repo FilmRepository) ActorsListWithFilms() (map[actor.Actor][]Film, error)
 	return actorsWithFilms, nil
 }
 
-func (repo *FilmRepository) findFilmsByTitle(titleFragment string) ([]Film, error) {
+func (repo *FilmRepository) FindFilmsByTitle(titleFragment string) ([]Film, error) {
 	op := "film_repo.FindFilmsByTitleFragment"
 
 	query := fmt.Sprintf(`
@@ -213,7 +213,7 @@ func (repo *FilmRepository) findFilmsByTitle(titleFragment string) ([]Film, erro
 	return films, nil
 }
 
-func (repo *FilmRepository) findFilmsByActor(actorName string) ([]Film, error) {
+func (repo *FilmRepository) FindFilmsByActor(actorName string) ([]Film, error) {
 	op := "film_repo.FindFilmsByActor"
 
 	query := fmt.Sprintf(`
