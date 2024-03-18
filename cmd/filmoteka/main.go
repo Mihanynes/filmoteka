@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	_ "filmoteka/docs"
 	"filmoteka/internal/actor"
 	"filmoteka/internal/auth"
 	"filmoteka/internal/film"
@@ -10,13 +11,8 @@ import (
 	"net/http"
 )
 
-const (
-	host     = "dbPostgres"
-	port     = 5432
-	user     = "postgres"
-	password = "111111"
-	dbname   = "postgres"
-)
+const dbLocal = "host=localhost port=5432 user=postgres dbname=filmoteka password=111111 sslmode=disable"
+const dbDocker = "host=dbPostgres port=5432 user=postgres dbname=postgres password=111111 sslmode=disable"
 
 //@title Filmoteka API
 //@version 1.0
@@ -25,8 +21,7 @@ const (
 // @host localhost:8080
 // @basePath /
 func main() {
-	dsn := "host=dbPostgres port=5432 user=postgres dbname=postgres password=111111 sslmode=disable"
-	db, err := sql.Open("postgres", dsn)
+	db, err := sql.Open("postgres", dbDocker)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,15 +48,6 @@ func main() {
 		Sessions: sm,
 	}
 
-	http.Handle("/swagger/", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
-	))
-
-	// Отдельный маршрут для JSON-документации Swagger без аутентификации
-	http.HandleFunc("/swagger/doc.json", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "/docs/swagger.json")
-	})
-
 	adminMux := http.NewServeMux()
 	adminMux.HandleFunc("/admin/actor/delete", a.DeleteActor)
 	adminMux.HandleFunc("/admin/film/update", f.UpdateFilm)
@@ -83,6 +69,10 @@ func main() {
 	siteMux.HandleFunc("/reg", u.Reg)
 
 	http.Handle("/", auth.AuthMiddleware(sm, siteMux))
+
+	http.Handle("/swagger/", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+	))
 
 	http.ListenAndServe(":8080", nil)
 

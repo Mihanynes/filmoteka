@@ -16,6 +16,11 @@ type Film struct {
 	Actors      []actor.Actor `json:"actors,omitempty"`
 }
 
+type ActorListWithFilms struct {
+	ActorInfo actor.Actor `json:"actor"`
+	Films     []Film      `json:"films"`
+}
+
 func (film *Film) Validate(w http.ResponseWriter) error {
 	err := pkg.DateValidation(film.ReleaseDate)
 	if err != nil {
@@ -35,16 +40,11 @@ func (film *Film) Validate(w http.ResponseWriter) error {
 	return nil
 }
 
-type ActorsListWithFilms struct {
-	ActorInfo actor.Actor `json:"actor"`
-	Films     []Film      `json:"films"`
-}
-
-func ConvertMapToActorsListWithFilms(data map[actor.Actor][]Film) []ActorsListWithFilms {
-	var result []ActorsListWithFilms
+func ConvertMapToActorsListWithFilms(data map[actor.Actor][]Film) []ActorListWithFilms {
+	var result []ActorListWithFilms
 
 	for actor, films := range data {
-		actorWithFilms := ActorsListWithFilms{
+		actorWithFilms := ActorListWithFilms{
 			ActorInfo: actor,
 			Films:     films,
 		}

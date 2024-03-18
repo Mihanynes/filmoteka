@@ -28,7 +28,7 @@ type ActorHandler struct {
 // @Failure 400 {string} string "Bad request"
 // @Failure 409 {string} string "Actor already exists"
 // @Failure 500 {string} string "Internal server error"
-// @Router user/actor/add [post]
+// @Router /user/actor/add [post]
 func (h *ActorHandler) AddActor(w http.ResponseWriter, r *http.Request) {
 	var actor Actor
 
@@ -77,7 +77,7 @@ func (h *ActorHandler) AddActor(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {string} string "Bad request"
 // @Failure 404 {string} string "Actor not found"
 // @Failure 500 {string} string "Internal server error"
-// @Router admin/actor/update [put]
+// @Router /admin/actor/update [put]
 func (h *ActorHandler) UpdateActor(w http.ResponseWriter, r *http.Request) {
 
 	actorInfo := make([]Actor, 2)
@@ -131,7 +131,7 @@ func (h *ActorHandler) UpdateActor(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {string} string "Bad request"
 // @Failure 404 {string} string "Actor not found"
 // @Failure 500 {string} string "Internal server error"
-// @Router admin/actor/delete [delete]
+// @Router /admin/actor/delete [delete]
 func (h *ActorHandler) DeleteActor(w http.ResponseWriter, r *http.Request) {
 	var actor Actor
 

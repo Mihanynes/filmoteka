@@ -1,9 +1,390 @@
 basePath: /
+definitions:
+  actor.Actor:
+    properties:
+      birth_date:
+        type: string
+      gender:
+        enum:
+        - man
+        - woman
+        type: string
+      name:
+        type: string
+    type: object
+  film.ActorListWithFilms:
+    properties:
+      actor:
+        $ref: '#/definitions/actor.Actor'
+      films:
+        items:
+          $ref: '#/definitions/film.Film'
+        type: array
+    type: object
+  film.Film:
+    properties:
+      actors:
+        items:
+          $ref: '#/definitions/actor.Actor'
+        type: array
+      description:
+        type: string
+      rating:
+        maximum: 10
+        minimum: 1
+        type: integer
+      release_date:
+        type: string
+      title:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
   description: This is a Filmoteka server.
   title: Filmoteka API
   version: "1.0"
-paths: {}
+paths:
+  /admin/actor/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет актера из базы данных по переданным данным актера.
+      parameters:
+      - description: Данные актера
+        in: body
+        name: actor
+        required: true
+        schema:
+          $ref: '#/definitions/actor.Actor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'actor deleted: {actor}'
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "404":
+          description: Actor not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Удаляет актера
+  /admin/actor/update:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию об актере в базе данных на основе переданных
+        данных.
+      parameters:
+      - description: Старая и новая информация об актере
+        in: body
+        name: actorInfo
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/actor.Actor'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'actor updated: {newActor}'
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "404":
+          description: Actor not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Обновляет информацию об актере
+  /admin/film/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет фильм из базы данных на основе переданных данных.
+      parameters:
+      - description: Данные фильма
+        in: body
+        name: film
+        required: true
+        schema:
+          $ref: '#/definitions/film.Film'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: film deleted
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Удаляет фильм
+  /admin/film/update:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию о фильме в базе данных на основе переданных
+        данных.
+      parameters:
+      - description: Старая и новая информация о фильме
+        in: body
+        name: filmInfo
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/film.Film'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: film updated
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Обновляет информацию о фильме
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Аутентифицирует пользователя по логину и паролю, предоставленным
+        в запросе.
+      parameters:
+      - description: Логин пользователя
+        in: query
+        name: login
+        required: true
+        type: string
+      - description: Пароль пользователя
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Logged in
+          schema:
+            type: string
+        "400":
+          description: No user" "Bad pass
+          schema:
+            type: string
+        "500":
+          description: Db err
+          schema:
+            type: string
+      summary: Аутентифицирует пользователя
+  /logout:
+    get:
+      consumes:
+      - application/json
+      description: Разлогинивает текущего пользователя, уничтожая его сессию, и перенаправляет
+        на страницу входа.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Logged out
+          schema:
+            type: string
+      summary: Выход пользователя
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Регистрирует нового пользователя, предоставляя логин, пароль и
+        статус isAdmin.
+      parameters:
+      - description: Логин пользователя
+        in: query
+        name: login
+        required: true
+        type: string
+      - description: Пароль пользователя
+        in: query
+        name: password
+        required: true
+        type: string
+      - description: Статус isAdmin пользователя (true или false)
+        in: query
+        name: isAdmin
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Регистрирует нового пользователя
+  /user/actor/add:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет нового актера в базу данных на основе переданных данных.
+      parameters:
+      - description: Данные актера
+        in: body
+        name: actor
+        required: true
+        schema:
+          $ref: '#/definitions/actor.Actor'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 'actor added: {actor}'
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "409":
+          description: Actor already exists
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Добавляет актера
+  /user/actors:
+    get:
+      description: Возвращает список всех актеров вместе с их фильмами из базы данных.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список актеров с фильмами
+          schema:
+            items:
+              $ref: '#/definitions/film.ActorListWithFilms'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Получает список актеров с их фильмами
+  /user/film/add:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новый фильм в базу данных на основе переданных данных.
+      parameters:
+      - description: Данные фильма
+        in: body
+        name: film
+        required: true
+        schema:
+          $ref: '#/definitions/film.Film'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: film added
+          schema:
+            type: string
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Добавляет фильм
+  /user/films:
+    get:
+      description: Возвращает список всех фильмов из базы данных, с возможностью сортировки
+        по указанному столбцу (по умолчанию сортировка по названию).
+      parameters:
+      - description: Столбец для сортировки (title, release_date, rating)
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список фильмов
+          schema:
+            items:
+              $ref: '#/definitions/film.Film'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Получает список всех фильмов
+  /user/films/find:
+    get:
+      description: Поиск фильмов в базе данных по указанной строке поиска.
+      parameters:
+      - description: Строка поиска
+        in: query
+        name: find
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Найденные фильмы
+          schema:
+            items:
+              $ref: '#/definitions/film.Film'
+            type: array
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Находит фильмы по строке поиска
 swagger: "2.0"

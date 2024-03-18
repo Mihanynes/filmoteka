@@ -31,7 +31,7 @@ type FilmHandler struct {
 // @Success 201 {string} string "film added"
 // @Failure 400 {string} string "Bad request"
 // @Failure 500 {string} string "Internal server error"
-// @Router user/film/add [post]
+// @Router /user/film/add [post]
 func (h *FilmHandler) AddFilm(w http.ResponseWriter, r *http.Request) {
 	var film Film
 
@@ -80,7 +80,7 @@ func (h *FilmHandler) AddFilm(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {string} string "film updated"
 // @Failure 400 {string} string "Bad request"
 // @Failure 500 {string} string "Internal server error"
-// @Router admin/film/update [put]
+// @Router /admin/film/update [put]
 func (h *FilmHandler) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 	var filmInfo []Film
 
@@ -139,7 +139,7 @@ func (h *FilmHandler) UpdateFilm(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {string} string "film deleted"
 // @Failure 400 {string} string "Bad request"
 // @Failure 500 {string} string "Internal server error"
-// @Router admin/film/delete [delete]
+// @Router /admin/film/delete [delete]
 func (h *FilmHandler) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 	var film Film
 
@@ -183,7 +183,7 @@ func (h *FilmHandler) DeleteFilm(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {array} Film "Список фильмов"
 // @Failure 400 {string} string "Bad request"
 // @Failure 500 {string} string "Internal server error"
-// @Router user/films [get]
+// @Router /user/films [get]
 func (h *FilmHandler) GetAllFilms(w http.ResponseWriter, r *http.Request) {
 	sortCol := r.URL.Query().Get("sort")
 	fmt.Println(sortCol)
@@ -221,7 +221,7 @@ func (h *FilmHandler) GetAllFilms(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {array} Film "Найденные фильмы"
 // @Failure 400 {string} string "Bad request"
 // @Failure 500 {string} string "Internal server error"
-// @Router user/films/find [get]
+// @Router /user/films/find [get]
 func (h *FilmHandler) FindFilms(w http.ResponseWriter, r *http.Request) {
 	toFind := r.URL.Query().Get("find")
 	if toFind == "" {
@@ -251,9 +251,9 @@ func (h *FilmHandler) FindFilms(w http.ResponseWriter, r *http.Request) {
 // @Summary Получает список актеров с их фильмами
 // @Description Возвращает список всех актеров вместе с их фильмами из базы данных.
 // @Produce json
-// @Success 200 {array} ActorWithFilms "Список актеров с фильмами"
+// @Success 200 {array} ActorListWithFilms "Список актеров с фильмами"
 // @Failure 500 {string} string "Internal server error"
-// @Router user/actors [get]
+// @Router /user/actors [get]
 func (h *FilmHandler) ActorsListWithFilms(w http.ResponseWriter, r *http.Request) {
 	actorsList, err := h.FilmRepo.ActorsListWithFilms()
 	if err != nil {
