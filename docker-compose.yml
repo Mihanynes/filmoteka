@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  filmoteka:
+    build: ./
+    command: ./wait-for-postgres.sh db ./filmoteka
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - DB_PASSWORD=111111
+
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=111111
+    ports:
+     - 5436:5432
